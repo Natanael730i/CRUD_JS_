@@ -43,3 +43,28 @@ app.post('/show', (req, res) => {
         res.redirect('/show')
     })
 })
+
+app.route('/edit/:id')
+  .get((req, res) => {
+    var id = req.params.id
+
+    db.collection('data').find(ObjectId(id)).toArray((err, result) => {
+        if(err) return res.send(err)
+        res.render('edit.ejs', { data: result })    
+    });
+}).post((req, res)=>{
+    var id = req.param.id
+    var name = req.body.name
+    var surname = req.body.surname
+
+    db.collection('data').updateOne({_id:ObjectId(id)},{
+        $set: {
+            name: name,
+            surname: surname
+        }
+    },(err,res) => {
+        if(err) return res.send(err)
+        res.redirect('/show')
+        console.log('atualizado no banco de dados')
+    })
+})
