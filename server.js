@@ -68,3 +68,13 @@ app.route('/edit/:id')
         console.log('atualizado no banco de dados')
     })
 })
+
+app.route('/delete/:id').get((req, res) => {
+    var id = req.params.id
+
+    db.collection('data').deleteOne({_id: ObjectId(id)}, (err,result) => {
+        if(err) return res.send(500, err)
+        console.log('Deletado do banco de dados!')
+        res.redirect('/show')
+    })
+})
