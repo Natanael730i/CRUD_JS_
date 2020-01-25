@@ -1,10 +1,10 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-
 const MongoClient = require('mongodb').MongoClient;
-
 const uri = "mongodb+srv://NodeJs:MyDbForLearning@mongodbcomnodejs-8gxkf.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const ObjectId = require('mongodb').ObjectID;
+
 
 MongoClient.connect(uri, (err, client) => {
     if (err) return console.log(err)
@@ -51,30 +51,30 @@ app.route('/edit/:id')
     db.collection('data').find(ObjectId(id)).toArray((err, result) => {
         if(err) return res.send(err)
         res.render('edit.ejs', { data: result })    
-    });
-}).post((req, res)=>{
+    });3000
+}).post((req, response)=>{
     var id = req.param.id
     var name = req.body.name
     var surname = req.body.surname
 
-    db.collection('data').updateOne({_id:ObjectId(id)},{
+    db.collection('data').updateOne({ _id:ObjectId(id) },{
         $set: {
             name: name,
             surname: surname
         }
     },(err,res) => {
         if(err) return res.send(err)
-        res.redirect('/show')
         console.log('atualizado no banco de dados')
+        response.redirect('/show')
     })
 })
 
-app.route('/delete/:id').get((req, res) => {
-    var id = req.params.id
+app.route('/delete/:id').get((req, response) => {
+    var id = req.params.id;
 
-    db.collection('data').deleteOne({_id: ObjectId(id)}, (err,result) => {
-        if(err) return res.send(500, err)
+    db.collection('data').deleteOne({_id:ObjectId(id)}, (err,res) => {
+        if(err) return res.send(500, err);
         console.log('Deletado do banco de dados!')
-        res.redirect('/show')
+        response.redirect('/show')
     })
 })
